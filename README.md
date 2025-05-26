@@ -11,17 +11,16 @@ pip install -r requirements.txt
 ```
 
 Create a Reddit app:
-1. Go to https://www.reddit.com/prefs/apps
-2. Login to your reddit account
-3. Create an app
+1. Login at https://www.reddit.com/prefs/apps
+2. Create an app
     - Type: script
     - Redirect uri: fill in with anything (ex: `http://localhost:8080`) - won't use this, but can't leave it blank
 
-Store Reddit app credentials:
+Store credentials as environment variables:
 1. Create an environment file (`.env`)
 2. Populate the .env with the credentials from the Reddit app:
 ```
-REDDIT_CLIENT_ID="<personal use script>"
-REDDIT_CLIENT_SECRET="<secret>"
+REDDIT_CLIENT_ID="<Reddit personal use script key>"
+REDDIT_CLIENT_SECRET="<Reddit secret key>"
 REDDIT_USER_AGENT="<platform>:<app ID>:<version string> (by u/<Reddit username>)"
 ```
