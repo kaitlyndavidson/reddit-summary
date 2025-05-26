@@ -36,7 +36,10 @@ def fetch_post_data(subreddit_name='AskReddit', post_limit=1, comment_limit=25):
     subreddit = access_subreddit(reddit, subreddit_name)
     # loop through posts in the given subreddit
     posts_comments = []
-    for post in subreddit.hot(limit=post_limit):
+    for post in subreddit.hot(limit=post_limit * 2):
+        # skip pinned posts
+        if post.stickied:
+            continue
         # replace the MoreComments instances in the CommentForest with the actual comments
         # limit the number of API calls based on the number of comments we want - estimate as comment_limit/10 replacements
         post.comments.replace_more(limit=int(comment_limit/10))
@@ -49,4 +52,6 @@ def fetch_post_data(subreddit_name='AskReddit', post_limit=1, comment_limit=25):
             'comments': comments,
             'post_id': post.id
         })
+        if len(posts_comments) >= post_limit:
+            break
     return posts_comments

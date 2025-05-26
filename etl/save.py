@@ -1,4 +1,5 @@
 import json
+import numpy as np
 
 # saves raw reddit data
 def save_raw(data, filename="outputs/raw_reddit_data.json"):
@@ -23,3 +24,21 @@ def print_summary(data):
         print("-" * 80 + "\nTop comments summary:")
         print(post['comments_summary'])
         print("=" * 80)
+
+# prints the classification report and confusion matrix
+# precision: the portion of predictions of a class that were correct
+# recall: the portion of a class that was predicted correctly
+# f1: combination of precision and recall
+# support: number of samples in a class
+# accuracy: the overall portion of samples correctly classified
+# confusion matrix:
+#            | predicted 0 | predicted 1 |
+#   actual 0 |      #      |      #      |
+#   actual 1 |      #      |      #      |
+def print_classification_report(report, cm, filename="outputs/classification_report.txt"):
+    with open(filename, 'w') as f:
+        f.write("Classification Report:\n")
+        f.write(report)
+        f.write("\n\nConfusion Matrix:\n")
+        # Format the confusion matrix nicely
+        np.savetxt(f, cm, fmt='%d', delimiter='\t')

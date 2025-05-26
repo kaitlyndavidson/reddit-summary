@@ -6,6 +6,6 @@ from transformers import pipeline
 summarizer = pipeline("summarization", model="facebook/bart-large-cnn")
 
 # summarize text using the summarization model
-def summarize_text(text, min_length=25, max_length=100):
-    summary = summarizer(text, min_length=min_length, max_length=max_length)
+def summarize_text(text, min_length=10, max_length=100):
+    summary = summarizer(text, min_length=min(min_length, len(text.split())), max_length=min(max_length, len(text.split())))
     return summary[0]['summary_text']
