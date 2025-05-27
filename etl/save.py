@@ -1,10 +1,23 @@
 import json
 import numpy as np
+from cloud.s3_utils import upload_to_s3
+import os
 
 # saves raw reddit data
-def save_raw(data, filename="outputs/raw_reddit_data.json"):
+def save_raw(data, filename="outputs/raw_reddit_data.json", s3_bucket=None):
+    # save as json
     with open(filename, 'w') as f:
         json.dump(data, f, ensure_ascii=False, indent=2)
+    # save as jsonl
+    jsonl_filename = filename.replace('.json', '.jsonl')
+    with open(jsonl_filename, 'w') as f_jsonl:
+        for item in data:
+            json.dump(item, f_jsonl)
+            f_jsonl.write('\n')
+    # upload to S3 if requested
+    if s3_bucket:
+        upload_to_s3(filename, s3_bucket, f"raw/{os.path.basename(filename)}")
+        upload_to_s3(jsonl_filename, s3_bucket, f"raw/{os.path.basename(jsonl_filename)}")
 
 # saves the reddit post titles and summaries of the comments
 def save_summary(data, filename="outputs/summary_output.txt"):

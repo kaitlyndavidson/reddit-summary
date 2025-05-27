@@ -1,6 +1,7 @@
 import praw
 import os
 from dotenv import load_dotenv
+from etl import save
 
 # setup read-only reddit client
 def create_reddit_client():
@@ -35,7 +36,7 @@ def fetch_post_data(subreddit_name='AskReddit', post_limit=1, comment_limit=25):
     reddit = create_reddit_client()
     subreddit = access_subreddit(reddit, subreddit_name)
     # loop through posts in the given subreddit
-    posts_comments = []
+    posts_data = []
     for post in subreddit.hot(limit=post_limit * 2):
         # skip pinned posts
         if post.stickied:
@@ -46,12 +47,13 @@ def fetch_post_data(subreddit_name='AskReddit', post_limit=1, comment_limit=25):
         # filter out any pinned comments
         comments = [comment.body for comment in post.comments[:comment_limit] if not comment.stickied]
         # save the post title, post body, a list of the top comments on that post, and the post ID
-        posts_comments.append({
+        posts_data.append({
             'title': post.title,
             'body': post.selftext,
             'comments': comments,
             'post_id': post.id
         })
-        if len(posts_comments) >= post_limit:
+        if len(posts_data) >= post_limit:
             break
-    return posts_comments
+    save.save_raw(posts_data, s3_bucket=os.getenv('AWS_BUCKET_NAME'))
+    return posts_data

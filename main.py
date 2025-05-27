@@ -1,5 +1,6 @@
 from etl import ingest, clean, save
 from models import summarizer, classifier
+from cloud import deploy_lambda
 
 # summarize the post content
 def summarize_body(body_text, min_output=25, max_output=100):
@@ -38,7 +39,6 @@ if __name__ == "__main__":
 
     # fetch and save raw reddit data
     posts_data = ingest.fetch_post_data(subreddit_name=subreddit_name, post_limit=post_limit, comment_limit=comment_limit)
-    save.save_raw(posts_data)
 
     # classification
     # doesn't perform super well - need more and better labeled data
